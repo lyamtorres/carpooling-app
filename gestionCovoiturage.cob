@@ -53,9 +53,9 @@
            02 fres_conducteur PIC A(10).
            02 fres_status PIC 9(1).
            02 fres_date_reservation.
-             03 WS-CURRENT-YEAR  PIC  9(4).
-              03 WS-CURRENT-MONTH PIC  9(2).
-              03 WS-CURRENT-DAY   PIC  9(2).
+               03 fres_annee  PIC  9(4).
+               03 fres_mois PIC  9(2).
+               03 fres_jour PIC  9(2).
            02 fres_statut_reservation PIC 9(2).
 
        FD fannonce.
@@ -63,17 +63,19 @@
            02 fa_code PIC 9(6).
            02 fa_prix PIC 9(8).
            02 fa_place_max PIC 9(1).
-           02 fa_place_dispo PIC 9(1).
-           02 fa_lieu_rdv PIC 9(30).
-           *> 02 fa_date_dep PIC X(8).
+           02 fa_lieudepart PIC X(30).
+           02 fa_lieudarrive PIC X(30).
+           02 fa_lieu_rdv PIC X(30).
+           02 fa_date_depart.
+              03 fa_annee  PIC  9(4).
+              03 fa_mois PIC  9(2).
+              03 fa_jour  PIC  9(2).
            02 fa_conducteur PIC A(10).
            *> fa_cle j'ai pas trop compris
 
 
        WORKING-STORAGE SECTION.
        77 cr_futilisateur PIC 9(2).
-       77 cr_fvoiture PIC 9(2).
-       77 cr_ftrajet PIC 9(2).
        77 cr_freservation PIC 9(2).
        77 cr_fannonce PIC 9(2).
 
