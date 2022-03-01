@@ -1,0 +1,5 @@
+#ignotre tous les fichiers dat
+*.dat
+*.dat.*
+
+COVOITURAGE
