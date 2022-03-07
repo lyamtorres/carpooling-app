@@ -1,10 +1,15 @@
+   ******************************************************************
+      * Authors:
+      * Date:
+      * Purpose:Programme principale de la gestion d'un covoiturage
+      *
+      ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. gestionCovoiturage.
 
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-
 
            SELECT futilisateur ASSIGN TO "utilisateur.dat"
            ORGANIZATION INDEXED
@@ -14,19 +19,30 @@
            ALTERNATE RECORD KEY IS fu_immatriculation
            FILE STATUS IS cr_futilisateur.
 
-
-
            SELECT freservation ASSIGN TO "reservation.dat"
-           ORGANIZATION SEQUENTIAL
-           ACCESS MODE IS SEQUENTIAL
+           ORGANIZATION INDEXED
+           ACCESS MODE is DYNAMIC
+           RECORD KEY IS fres_code
+           ALTERNATE RECORD KEY IS fres_voyageur WITH DUPLICATES
+           ALTERNATE RECORD KEY IS fres_conducteur WITH DUPLICATES
            FILE STATUS IS cr_freservation.
 
+
+           SELECT fstatistiques ASSIGN TO "statistiques.dat"
+           ORGANIZATION INDEXED
+           ACCESS MODE is DYNAMIC
+           RECORD KEY IS fs_code
+           ALTERNATE RECORD KEY IS fs_villeD WITH DUPLICATES
+           ALTERNATE RECORD KEY IS fs_villeA WITH DUPLICATES
+           ALTERNATE RECORD KEY IS fs_conducteur WITH DUPLICATES
+           FILE STATUS IS cr_fstatistiques.
 
            SELECT fannonce ASSIGN TO "annonce.dat"
            ORGANIZATION INDEXED
            ACCESS MODE IS DYNAMIC
            RECORD KEY IS fa_code
-           ALTERNATE RECORD KEY IS fa_lieu_rdv WITH DUPLICATES
+           ALTERNATE RECORD KEY IS fa_lieudepart WITH DUPLICATES
+           ALTERNATE RECORD KEY IS fa_lieudarrive  WITH DUPLICATES
            FILE STATUS IS cr_fannonce.
 
        DATA DIVISION.
@@ -44,9 +60,6 @@
            02 fu_immatriculation PIC X(9).
            02 fu_nbplace PIC 9(5).
 
-
-
-
        FD freservation.
        01 tamp_freservation.
            02 fres_code PIC 9(6).
@@ -54,9 +67,9 @@
            02 fres_conducteur PIC 9(10).
            02 fres_status PIC 9(1).
            02 fres_date_reservation.
-             03 WS-CURRENT-YEAR  PIC  9(4).
-              03 WS-CURRENT-MONTH PIC  9(2).
-              03 WS-CURRENT-DAY   PIC  9(2).
+               03 fres_annee  PIC  9(4).
+               03 fres_mois PIC  9(2).
+               03 fres_jour PIC  9(2).
            02 fres_statut_reservation PIC 9(2).
 
        FD fannonce.
@@ -64,6 +77,7 @@
            02 fa_code PIC 9(6).
            02 fa_prix PIC 9(8).
            02 fa_place_max PIC 9(1).
+<<<<<<< HEAD
            02 fa_place_dispo PIC 9(1).
            02 fa_lieu_rdv PIC 9(30).
            02 fa_depart PIC 9(30).
@@ -73,14 +87,33 @@
               03 WS-CURRENT-MONTH PIC  9(2).
               03 WS-CURRENT-DAY   PIC  9(2).
            02 fa_conducteur PIC 9(10).
+=======
+           02 fa_lieudepart PIC X(30).
+           02 fa_lieudarrive PIC X(30).
+           02 fa_lieu_rdv PIC X(30).
+           02 fa_conducteur PIC A(10).
+           02 fa_date_depart.
+              03 fa_annee  PIC  9(4).
+              03 fa_mois PIC  9(2).
+              03 fa_jour  PIC  9(2).
+
+       FD fstatistiques.
+
+       01 tamp_fstatistiques.
+           02 fs_code PIC 9(6).
+           02 fs_villeD PIC X(30).
+           02 fs_villeA PIC X(30).
+           02 fs_conducteur PIC A(10).
+           02 fs_prix PIC 9(8).
+
+>>>>>>> 9bb4717c9f44d2f6ba9e1cc357e204baf1b49a3c
 
 
        WORKING-STORAGE SECTION.
        77 cr_futilisateur PIC 9(2).
-       77 cr_fvoiture PIC 9(2).
-       77 cr_ftrajet PIC 9(2).
        77 cr_freservation PIC 9(2).
        77 cr_fannonce PIC 9(2).
+<<<<<<< HEAD
 
 
            *> toure
@@ -98,6 +131,13 @@
        77 w_test PIC 9(1).
 
 
+=======
+       77 cr_fstatistiques PIC 9(2).
+      *>** variables temporaires pour les villes de départ et d arrivé
+       77 wnomvilleD PIC X(30).
+       77 wnomvilleA PIC X(30).
+       77 Wfin PIC 9(1).
+>>>>>>> 9bb4717c9f44d2f6ba9e1cc357e204baf1b49a3c
        PROCEDURE DIVISION.
 
            OPEN I-O futilisateur
@@ -105,9 +145,6 @@
               OPEN OUTPUT futilisateur
            END-IF
            CLOSE futilisateur
-
-
-
 
            OPEN I-O freservation
            IF cr_freservation=35 THEN
@@ -119,8 +156,9 @@
            IF cr_fannonce=35 THEN
               OPEN OUTPUT fannonce
            END-IF
-           CLOSE fannonce
+           CLOSE fannonce.
 
+<<<<<<< HEAD
            
            
            *> Affiche la page de connexion
@@ -135,3 +173,14 @@
 
 
 
+=======
+           OPEN I-O fstatistiques
+           IF cr_fstatistiques=35 THEN
+              OPEN OUTPUT fstatistiques
+           END-IF
+           CLOSE fstatistiques.
+           COPY 'reservation.cpy'.
+           STOP RUN.
+
+           END PROGRAM gestionCovoiturage.
+>>>>>>> 9bb4717c9f44d2f6ba9e1cc357e204baf1b49a3c

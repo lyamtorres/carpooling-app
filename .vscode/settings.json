@@ -1,0 +1,7 @@
+{
+    "cobol-lsp.cpy-manager.paths-local": [
+        ".",
+        "./",
+        "./copy/"
+    ]
+}
