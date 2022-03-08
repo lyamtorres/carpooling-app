@@ -1,5 +1,5 @@
 // fichier indexé - ajout direct - CP: fa_cle - CSAD: fa_cle, fa_lieu_rdv
-fonction ajouterAnnonce(E/S fannonce: Fannonce, E frajet: Ftrajet)
+procedure ajouterAnnonce(E/S fannonce: Fannonce, E frajet: Ftrajet)
 variables
     cr_fannonce : cdc
     tamp_fannonce : Tannonce
@@ -17,7 +17,7 @@ debut
         lire(tamp_fannonce.fa_cle.ftra_pointdepart)
         ecrire('Veuillez saisir votre destination :')
         lire(tamp_fannonce.fa_cle.ftra_pointarrive)
-    jusqu a (existe_trajet(ftrajet, tamp_fannonce.fa_cle.ftra_pointdepart, tamp_fannonce.fa_cle.ftra_pointarrive))
+    jusqu a (existeTrajet(ftrajet, tamp_fannonce.fa_cle.ftra_pointdepart, tamp_fannonce.fa_cle.ftra_pointarrive))
 
     repeter
         ecrire('Veuillez saisir un lieu de rendez-vous :')
@@ -38,4 +38,39 @@ debut
     ecrireDir(fannonce, tamp_fannonce, cr_fannonce)
     fermer(fannonce, cr_fannonce)
 
+fin
+
+// fichier indexé - CP: ftra_cle -> recherche directe
+fonction existeTrajet(E ftrajet : Ftrajet, E depart : cdc, E arrive : cdc) : booleen
+variables
+    tamp_ftrajet : Ttrajet
+    cr_ftrajet : cdc
+    existe : booleen
+    reponse : caractere
+
+debut
+    ouvrir(ftrajet, <<lecture>>, cr_ftrajet)
+    tamp_ftrajet.ftra_cle.ftra_pointdepart <- depart
+    tamp_ftrajet.ftra_cle.ftra_pointarrive <- arrive
+    lireDir(ftrajet, tamp_ftrajet, cr_ftrajet)
+    si (cr_ftrajet = 'OK') alors
+        existe = vrai
+    sinon
+        repeter
+            ecrire('Trajet inexistant. Voulez-vous créer un nouveau trajet ? O/N')
+            lire(reponse)
+            si (reponse = 'O') alors
+                existe = vrai
+            sinon si (reponse = 'N') alors
+                existe = faux
+            fin si
+        jusqu'a (reponse = 'O' ou reponse = 'N')
+    fin si
+    fermer(ftrajet, cr_ftrajet)
+    si (reponse = 'O') alors
+        ouvrir(ftrajet, <<mise-a-jour>>, cr_ftrajet)
+        ecrireDir(ftrajet, tamp_ftrajet, cr_ftrajet)
+        fermer(ftrajet, cr_ftrajet)
+    fin si
+    retourner existe
 fin
