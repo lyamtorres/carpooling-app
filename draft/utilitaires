@@ -1,0 +1,38 @@
+*>  affichage de toutes les annonces
+    OPEN INPUT fannonce
+    MOVE 1 TO Wfin
+
+    PERFORM WITH TEST AFTER UNTIL Wfin = 0
+       READ fannonce NEXT
+       AT END MOVE 0 TO Wfin
+       NOT AT END
+           DISPLAY "Code : " fa_code
+           DISPLAY "Prix : " fa_prix
+           DISPLAY "Places : " fa_place_max
+           DISPLAY "Départ : " fa_lieudepart
+           DISPLAY "Arrivée : " fa_lieudarrive
+           DISPLAY "Rendez-vous : " fa_lieu_rdv
+           DISPLAY "Conducteur : " fa_conducteur
+           DISPLAY "Date de départ : " fa_date_depart
+           DISPLAY " "
+       END-READ
+    END-PERFORM
+
+    CLOSE fannonce.
+
+
+*>  affichage de tous les trajets
+    OPEN INPUT ftrajet
+    MOVE 1 TO Wfin
+
+    PERFORM WITH TEST AFTER UNTIL Wfin = 0
+       READ ftrajet NEXT
+       AT END MOVE 0 TO Wfin
+       NOT AT END
+           DISPLAY "Départ : " ftra_pointdepart
+           DISPLAY "Arrivée : " ftra_pointarrive
+           DISPLAY " "
+       END-READ
+    END-PERFORM
+
+    CLOSE ftrajet.

@@ -121,7 +121,12 @@
        77 cr_fannonce PIC 9(2).
        77 cr_fstatistiques PIC 9(2).
        77 cr_ftrajet PIC 9(2).
-      *>** variables temporaires pour les villes de d�part et d arriv�
+
+       *>  variables temporaires pour publication
+       77 wreponse PIC X(1).
+       77 wexiste PIC 9(1).
+
+       *>** variables temporaires pour les villes de d�part et d arriv�
        77 wnomvilleD PIC X(30).
        77 wnomvilleA PIC X(30).
        77 datedepart PIC X(30).
