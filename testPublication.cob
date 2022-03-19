@@ -45,12 +45,6 @@
            ALTERNATE RECORD KEY IS fa_lieudarrive  WITH DUPLICATES
            FILE STATUS IS cr_fannonce.
 
-           SELECT ftrajet ASSIGN TO "trajet.dat"
-           ORGANIZATION INDEXED
-           ACCESS MODE IS DYNAMIC
-           RECORD KEY IS ftra_cle
-           FILE STATUS IS cr_ftrajet.
-
        DATA DIVISION.
 
        FILE SECTION.
@@ -101,16 +95,6 @@
            02 fs_conducteur PIC A(10).
            02 fs_prix PIC 9(8).
 
-       FD ftrajet.
-
-       01 tamp_ftrajet.
-           02 ftra_cle.
-               03 ftra_pointdepart PIC X(30).
-               03 ftra_pointarrive PIC X(30).
-           02 ftra_prix PIC 9(8).
-           02 ftra_duree PIC 9(8).
-
-
        WORKING-STORAGE SECTION.
        01 SYS-DATE6.
            03 AA   PIC 99.
@@ -120,11 +104,9 @@
        77 cr_freservation PIC 9(2).
        77 cr_fannonce PIC 9(2).
        77 cr_fstatistiques PIC 9(2).
-       77 cr_ftrajet PIC 9(2).
 
-       *>  variables temporaires pour publication
-       77 wreponse PIC X(1).
-       77 wexiste PIC 9(1).
+       *>* variables pour l'annonce
+       77 wcode PIC 9(6).
 
        *>** variables temporaires pour les villes de d�part et d arriv�
        77 wnomvilleD PIC X(30).
@@ -158,13 +140,7 @@
            END-IF
            CLOSE fstatistiques.
 
-           OPEN I-O ftrajet
-           IF cr_ftrajet=35 THEN
-              OPEN OUTPUT ftrajet
-           END-IF
-           CLOSE ftrajet.
-
-           COPY 'publication.cpy'.
+           COPY 'supprimerAnnonce.cpy'.
 
            STOP RUN.
 
