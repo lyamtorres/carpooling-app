@@ -1,12 +1,5 @@
-   ******************************************************************
-      * Authors:
-      * Date:
-      * Purpose:Programme principale de la gestion d'un covoiturage
-      *
-      ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. gestionCovoiturage.
-
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
@@ -59,6 +52,7 @@
            02 fu_solde PIC 9(4).
            02 fu_immatriculation PIC X(9).
            02 fu_nbplace PIC 9(5).
+           02 fu_status PIC 9(2).
 
        FD freservation.
        01 tamp_freservation.
@@ -77,7 +71,7 @@
            02 fa_code PIC 9(6).
            02 fa_prix PIC 9(8).
            02 fa_place_max PIC 9(1).
-<<<<<<< HEAD
+
            02 fa_place_dispo PIC 9(1).
            02 fa_lieu_rdv PIC 9(30).
            02 fa_depart PIC 9(30).
@@ -87,7 +81,7 @@
               03 WS-CURRENT-MONTH PIC  9(2).
               03 WS-CURRENT-DAY   PIC  9(2).
            02 fa_conducteur PIC 9(10).
-=======
+
            02 fa_lieudepart PIC X(30).
            02 fa_lieudarrive PIC X(30).
            02 fa_lieu_rdv PIC X(30).
@@ -105,15 +99,12 @@
            02 fs_villeA PIC X(30).
            02 fs_conducteur PIC A(10).
            02 fs_prix PIC 9(8).
-
->>>>>>> 9bb4717c9f44d2f6ba9e1cc357e204baf1b49a3c
-
-
+    
        WORKING-STORAGE SECTION.
        77 cr_futilisateur PIC 9(2).
        77 cr_freservation PIC 9(2).
        77 cr_fannonce PIC 9(2).
-<<<<<<< HEAD
+
 
 
            *> toure
@@ -126,18 +117,22 @@
            02 wu_solde PIC 9(4).
            02 wu_immatriculation PIC X(9).
            02 wu_nbplace PIC 9(5).
-       77 w_teluser PIC 9(10).
-       77 w_text PIC 9(30).
+           02 wu_status PIC 9(2).
+
+      
+       77 w_text PIC X(10).
        77 w_test PIC 9(1).
+       77 w_prix PIC 9(4).
+       77 w_rep PIC A(3).
 
 
-=======
+
        77 cr_fstatistiques PIC 9(2).
-      *>** variables temporaires pour les villes de départ et d arrivé
+      *>** variables temporaires pour les villes de dï¿½part et d arrivï¿½
        77 wnomvilleD PIC X(30).
        77 wnomvilleA PIC X(30).
        77 Wfin PIC 9(1).
->>>>>>> 9bb4717c9f44d2f6ba9e1cc357e204baf1b49a3c
+       
        PROCEDURE DIVISION.
 
            OPEN I-O futilisateur
@@ -156,31 +151,24 @@
            IF cr_fannonce=35 THEN
               OPEN OUTPUT fannonce
            END-IF
-           CLOSE fannonce.
+           CLOSE fannonce
 
-<<<<<<< HEAD
-           
-           
-           *> Affiche la page de connexion
-           PERFORM AFFICHE_PAGE_CONNEXION.
-           
-           
-           
-
-           STOP RUN.
-           
-           copy "compte.cpy".
-
-
-
-=======
            OPEN I-O fstatistiques
            IF cr_fstatistiques=35 THEN
               OPEN OUTPUT fstatistiques
            END-IF
-           CLOSE fstatistiques.
-           COPY 'reservation.cpy'.
-           STOP RUN.
+           CLOSE fstatistiques
 
-           END PROGRAM gestionCovoiturage.
->>>>>>> 9bb4717c9f44d2f6ba9e1cc357e204baf1b49a3c
+
+           *> Affiche la page de connexion
+           PERFORM AFFICHE_PAGE_CONNEXION
+
+
+           STOP RUN.
+           
+           copy "menu.cpy".
+           copy "compte.cpy".
+           *> copy "reservation.cpy".
+
+
+
