@@ -64,7 +64,6 @@
            DISPLAY "|| SUPPRIMER UNE ANNNONCE ||"
            DISPLAY " "
 
-           *> affichage d'annonces en cours
            PERFORM AFFICHER_ANNONCE
 
            DISPLAY "Veuillez saisir le code de l'annonce à supprimer."
