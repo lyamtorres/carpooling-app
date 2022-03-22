@@ -71,6 +71,7 @@
            02 fa_code PIC 9(6).
            02 fa_prix PIC 9(8).
            02 fa_place_max PIC 9(1).
+<<<<<<< HEAD
 
            02 fa_place_dispo PIC 9(1).
            02 fa_lieu_rdv PIC 9(30).
@@ -82,6 +83,8 @@
               03 WS-CURRENT-DAY   PIC  9(2).
            02 fa_conducteur PIC 9(10).
 
+=======
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
            02 fa_lieudepart PIC X(30).
            02 fa_lieudarrive PIC X(30).
            02 fa_lieu_rdv PIC X(30).
@@ -99,11 +102,23 @@
            02 fs_villeA PIC X(30).
            02 fs_conducteur PIC A(10).
            02 fs_prix PIC 9(8).
+<<<<<<< HEAD
     
+=======
+
+
+
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
        WORKING-STORAGE SECTION.
+       *> pour récuperer la date du système
+       01 SYS-DATE6.
+           03 AA   PIC 99.
+           03 MM  PIC 99.
+           03 JJ    PIC 99.
        77 cr_futilisateur PIC 9(2).
        77 cr_freservation PIC 9(2).
        77 cr_fannonce PIC 9(2).
+<<<<<<< HEAD
 
 
 
@@ -127,12 +142,17 @@
 
 
 
+=======
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
        77 cr_fstatistiques PIC 9(2).
       *>** variables temporaires pour les villes de dï¿½part et d arrivï¿½
        77 wnomvilleD PIC X(30).
        77 wnomvilleA PIC X(30).
        77 Wfin PIC 9(1).
+<<<<<<< HEAD
        
+=======
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
        PROCEDURE DIVISION.
 
            OPEN I-O futilisateur
@@ -160,6 +180,7 @@
            CLOSE fstatistiques
 
 
+<<<<<<< HEAD
            *> Affiche la page de connexion
            PERFORM AFFICHE_PAGE_CONNEXION
 
@@ -172,3 +193,16 @@
 
 
 
+=======
+           OPEN I-O fstatistiques
+           IF cr_fstatistiques=35 THEN
+              OPEN OUTPUT fstatistiques
+           END-IF
+           CLOSE fstatistiques.
+
+           COPY 'reservation.cpy'.
+
+           STOP RUN.
+
+           END PROGRAM gestionCovoiturage.
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
