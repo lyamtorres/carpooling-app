@@ -116,6 +116,8 @@
               03 w_mois PIC  9(2).
               03 w_jour  PIC  9(2).
        77 Wfin PIC 9(1).
+       77 w_opt PIC 9(1).
+       77 w_rep PIC X(1).
         *> pour récuperer la date du système
        01 SYS-DATE6.
            03 AA   PIC 99.
@@ -138,18 +140,19 @@
               OPEN OUTPUT fannonce
            END-IF
            CLOSE fannonce
+
            *> page identification et connexion
           *> ACCEPT SYS-DATE6 FROM DATE
            DISPLAY "bonjour"
 
-           *> Affiche la page de connexion
+           *> affiche la page de connexion
            *> PERFORM AFFICHE_PAGE_CONNEXION
 
-           PERFORM SUPPRIMER_ANNONCE
+           PERFORM AFFICHER_OPTIONS_ANNONCES
 
            STOP RUN.
 
-           *> copy "compte.cpy".
+           copy "compte.cpy".
            copy "publication.cpy".
 
            END PROGRAM gestionCovoiturage.
