@@ -1,12 +1,13 @@
        AFFICHER_OPTIONS_ANNONCES.
-           PERFORM WITH TEST AFTER UNTIL w_opt >= 1 AND w_opt <= 4
+           PERFORM WITH TEST AFTER UNTIL w_opt >= 1 AND w_opt <= 5
                DISPLAY "|| GESTION DES ANNONCES ||"
                DISPLAY " "
                DISPLAY "Veuillez saisir le numéro de l'option souhaité."
                DISPLAY "1.Publier une annonce"
                DISPLAY "2.Modifier une annonce"
                DISPLAY "3.Supprimer une annonce"
-               DISPLAY "4.Sortir"
+               DISPLAY "4.Afficher toutes les annonces"
+               DISPLAY "5.Sortir"
                ACCEPT w_opt
            END-PERFORM
 
@@ -18,6 +19,8 @@
            WHEN 3
                 PERFORM SUPPRIMER_ANNONCE
            WHEN 4
+               PERFORM AFFICHER_ANNONCES
+           WHEN 5
                DISPLAY "À bientôt !"
            END-EVALUATE.
 
@@ -27,20 +30,39 @@
            ACCEPT SYS-DATE6 FROM DATE
            *> saisie date de départ
            DISPLAY "Vous allez d'abord saisir la date de départ."
+           DISPLAY "ATTENTION ! Vous pouvez uniquement publier des"
+           DISPLAY "annonces pour l'année en cours."
            DISPLAY " "
            SET w_annee TO AA
-           PERFORM WITH TEST AFTER UNTIL w_mois >= MM
+           PERFORM WITH TEST AFTER UNTIL w_mois >= MM AND w_mois <= 12
                DISPLAY "Veuillez saisir le mois souhaité."
-               DISPLAY "(entre 1 et 12)"
+               DISPLAY "(entre " MM " et 12)"
                ACCEPT w_mois
                DISPLAY " "
            END-PERFORM
-           PERFORM WITH TEST AFTER UNTIL w_jour >= JJ
+           IF w_mois = 1 OR w_mois = 3 OR w_mois = 5 OR
+              w_mois = 7 OR w_mois = 8 OR w_mois = 10 OR
+              w_mois = 12 THEN
+               SET w_dernier_jour TO 31
+           ELSE IF w_mois = 4 OR w_mois = 6 OR w_mois = 9 OR
+                   w_mois = 11
+               SET w_dernier_jour TO 30
+           ELSE
+               SET w_dernier_jour TO 28
+           END-IF
+           IF w_mois = MM THEN
+               SET w_premier_jour TO JJ
+           ELSE
+               SET w_premier_jour TO 1
+           END-IF
+           PERFORM WITH TEST AFTER UNTIL w_jour >= w_premier_jour
+               AND w_jour <= w_dernier_jour
                DISPLAY "Maintenant, veuillez saisir le jour."
-               DISPLAY "(entre 1 et 31)"
+               DISPLAY "(entre " w_premier_jour "et " w_dernier_jour ")"
                ACCEPT w_jour
                DISPLAY " "
            END-PERFORM
+
            *> saisie point de départ et d'arrivée
            DISPLAY "Veuillez saisir votre point de départ."
            ACCEPT w_lieu_depart
@@ -69,7 +91,7 @@
            END-PERFORM
            *>  ajout de l'annonce
            *>  note : il faut augmenter fa_code de 1 à chaque exécution
-           MOVE 7 TO w_code
+           MOVE 1 TO w_code
            MOVE "Guest" TO w_conducteur
             MOVE w_annonce TO tamp_fannonce
            OPEN I-O fannonce
@@ -83,11 +105,13 @@
                END-WRITE
            CLOSE fannonce.
 
+           *> TO-DO : trouver le problème avec le mois en cours
+
        MODIFIER_ANNONCE.
            DISPLAY "|| MODIFIER UNE ANNONCE ||"
            DISPLAY " "
 
-           PERFORM AFFICHER_ANNONCE
+           PERFORM AFFICHER_ANNONCES
 
            DISPLAY "Veuillez saisir le code de l'annonce à modifier."
            ACCEPT w_code
@@ -183,11 +207,13 @@
 
            CLOSE fannonce.
 
+           *> TO-DO : sauvegarder les infos qui ne sont pas modifiés
+
        SUPPRIMER_ANNONCE.
            DISPLAY "|| SUPPRIMER UNE ANNNONCE ||"
            DISPLAY " "
 
-           PERFORM AFFICHER_ANNONCE
+           PERFORM AFFICHER_ANNONCES
 
            DISPLAY "Veuillez saisir le code de l'annonce à supprimer."
            ACCEPT w_code
@@ -211,11 +237,11 @@
 
            *> TO-DO : afficher uniquement les annonces d'un seul user
 
-       AFFICHER_ANNONCE.
+       AFFICHER_ANNONCES.
            DISPLAY "Voici la liste d'annonces en cours :"
            DISPLAY " "
            OPEN INPUT fannonce
-           MOVE 1 TO Wfin
+           MOVE 2 TO Wfin
 
            PERFORM WITH TEST AFTER UNTIL Wfin = 0
            READ fannonce NEXT

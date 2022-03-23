@@ -117,6 +117,8 @@
               03 w_jour  PIC  9(2).
        77 Wfin PIC 9(1).
        77 w_opt PIC 9(1).
+       77 w_premier_jour PIC 9(2).
+       77 w_dernier_jour PIC 9(2).
        77 w_rep PIC X(1).
         *> pour récuperer la date du système
        01 SYS-DATE6.
