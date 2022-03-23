@@ -49,6 +49,7 @@
            02 fu_solde PIC 9(4).
            02 fu_immatriculation PIC X(9).
            02 fu_nbplace PIC 9(5).
+           02 fu_status PIC 9(2).
 
        FD freservation.
        01 tamp_freservation.
@@ -66,8 +67,27 @@
            02 fa_code PIC 9(6).
            02 fa_prix PIC 9(8).
            02 fa_place_max PIC 9(1).
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+           02 fa_place_dispo PIC 9(1).
+           02 fa_lieu_rdv PIC 9(30).
+           02 fa_depart PIC 9(30).
+           02 fa_arrive PIC 9(30).
+           02 fra_date_dep.
+             03 WS-CURRENT-YEAR  PIC  9(4).
+              03 WS-CURRENT-MONTH PIC  9(2).
+              03 WS-CURRENT-DAY   PIC  9(2).
+           02 fa_conducteur PIC 9(10).
+
+=======
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
+           02 fa_lieudepart PIC X(30).
+           02 fa_lieudarrive PIC X(30).
+=======
            02 fa_lieu_depart PIC X(30).
            02 fa_lieu_darrive PIC X(30).
+>>>>>>> a28349c29d9901681fddae244045ecef1e2ca166
            02 fa_lieu_rdv PIC X(30).
            02 fa_conducteur PIC A(10).
            02 fa_date_depart.
@@ -82,11 +102,46 @@
            02 fs_villeA PIC X(30).
            02 fs_conducteur PIC A(10).
            02 fs_prix PIC 9(8).
+<<<<<<< HEAD
+    
+=======
 
+<<<<<<< HEAD
+
+
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
+=======
+>>>>>>> a28349c29d9901681fddae244045ecef1e2ca166
        WORKING-STORAGE SECTION.
        77 cr_futilisateur PIC 9(2).
        77 cr_freservation PIC 9(2).
        77 cr_fannonce PIC 9(2).
+<<<<<<< HEAD
+
+
+
+           *> toure
+       01 wutilisateur.
+           02 wu_telephone PIC 9(10).
+           02 wu_nom PIC A(20).
+           02 wu_prenom PIC A(30).
+           02 wu_mdp PIC X(10).
+           02 wu_type PIC 9(1).
+           02 wu_solde PIC 9(4).
+           02 wu_immatriculation PIC X(9).
+           02 wu_nbplace PIC 9(5).
+           02 wu_status PIC 9(2).
+
+      
+       77 w_text PIC X(10).
+       77 w_test PIC 9(1).
+       77 w_prix PIC 9(4).
+       77 w_rep PIC A(3).
+
+
+
+=======
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
        77 cr_fstatistiques PIC 9(2).
            *> toure
        01 wutilisateur.
@@ -116,6 +171,13 @@
               03 w_mois PIC  9(2).
               03 w_jour  PIC  9(2).
        77 Wfin PIC 9(1).
+<<<<<<< HEAD
+<<<<<<< HEAD
+       
+=======
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
+       PROCEDURE DIVISION.
+=======
        77 w_opt PIC 9(1).
        77 w_premier_jour PIC 9(2).
        77 w_dernier_jour PIC 9(2).
@@ -125,6 +187,7 @@
            03 AA   PIC 99.
            03 MM  PIC 99.
            03 JJ    PIC 99.
+>>>>>>> a28349c29d9901681fddae244045ecef1e2ca166
 
        PROCEDURE DIVISION.
            OPEN I-O futilisateur
@@ -142,10 +205,40 @@
               OPEN OUTPUT fannonce
            END-IF
            CLOSE fannonce
+<<<<<<< HEAD
+
+           OPEN I-O fstatistiques
+           IF cr_fstatistiques=35 THEN
+              OPEN OUTPUT fstatistiques
+           END-IF
+           CLOSE fstatistiques
+
+
+<<<<<<< HEAD
+           *> Affiche la page de connexion
+           PERFORM AFFICHE_PAGE_CONNEXION
+
+
+           STOP RUN.
+           
+           copy "menu.cpy".
+           copy "compte.cpy".
+           *> copy "reservation.cpy".
+
+
+
+=======
+           OPEN I-O fstatistiques
+           IF cr_fstatistiques=35 THEN
+              OPEN OUTPUT fstatistiques
+           END-IF
+           CLOSE fstatistiques.
+=======
 
            *> page identification et connexion
           *> ACCEPT SYS-DATE6 FROM DATE
            DISPLAY "bonjour"
+>>>>>>> a28349c29d9901681fddae244045ecef1e2ca166
 
            *> affiche la page de connexion
            *> PERFORM AFFICHE_PAGE_CONNEXION
@@ -158,3 +251,4 @@
            copy "publication.cpy".
 
            END PROGRAM gestionCovoiturage.
+>>>>>>> a54a6c2c51f7291b2f65f620527ccc702b93b89a
