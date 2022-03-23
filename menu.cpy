@@ -1,10 +1,10 @@
-    *> page identification et connexion
+       *> page identification et connexion
 
 
        AFFICHE_PAGE_CONNEXION.
 
            PERFORM WITH TEST AFTER UNTIL w_test > 0 AND w_test < 4
-           
+
                 DISPLAY "------------ GESTION COVOITURAGE ------------"
                 DISPLAY "1.   INSCRIPTION"
                 DISPLAY "2.   CONNEXION"
@@ -21,13 +21,13 @@
            WHEN 3
                 DISPLAY "A TRES BIENTOT"
 
-           END-EVALUATE.    
-    
-    *> menu principal
+           END-EVALUATE.
+
+       *> menu principal
        AFFICHE_MENU.
 
            PERFORM WITH TEST AFTER UNTIL w_test > 0 AND w_test < 6
-           
+
                 DISPLAY "------------ GESTION COVOITURAGE ------------"
                 DISPLAY "1.   RESERVATIONS"
                 DISPLAY "2.   ANNONCES"
@@ -41,7 +41,7 @@
            WHEN 1
                 DISPLAY "RESERVATION"
            WHEN 2
-                DISPLAY "ANNONCES"
+                PERFORM AFFICHER_OPTIONS_ANNONCES
            WHEN 3
                 PERFORM PAGE_PROFIL
            WHEN 4
@@ -51,11 +51,11 @@
 
            END-EVALUATE.
 
-    *> menu profi
+       *> menu profil
        PAGE_PROFIL.
 
            PERFORM WITH TEST AFTER UNTIL w_test > 0 AND w_test < 7
-           
+
                 DISPLAY "------------ GESTION COVOITURAGE ------------"
                 DISPLAY "---------------------------------------------"
                 DISPLAY "|               MON PROFIL                  |"
@@ -72,22 +72,21 @@
            EVALUATE w_test
            WHEN 1
                 PERFORM VOIR_PROFIL
-                
+
            WHEN 2
                 PERFORM RECHARGE_COMPTE
-                
+
            WHEN 3
                 PERFORM CHANGE_MPD
-                
+
            WHEN 4
-                
+
                 PERFORM CHANGE_STATUS
            WHEN 5
-                
+
                 PERFORM SUPPRIME_COMPTE
-          WHEN 6
-                
+           WHEN 6
+
                 PERFORM AFFICHE_MENU
 
            END-EVALUATE.
-
