@@ -60,12 +60,12 @@
            PERFORM WITH TEST AFTER UNTIL w_jour >= w_premier_jour
                AND w_jour <= w_dernier_jour
                DISPLAY "Maintenant, veuillez saisir le jour."
-               DISPLAY "(entre " w_premier_jour "et " w_dernier_jour ")"
+               DISPLAY "("w_premier_jour " a " w_dernier_jour ")"
                ACCEPT w_jour
                DISPLAY " "
            END-PERFORM
 
-           *> saisie point de départ et d'arrivée
+           *> saisie point de depart et d'arrivee
            DISPLAY "Veuillez saisir votre point de depart."
            ACCEPT w_lieu_depart
            DISPLAY " "
@@ -78,9 +78,9 @@
            DISPLAY " "
            *>  saisie nombre de voyageurs
            PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
-           w_place_max <= 4
+           w_place_max <= fu_nbplace
                DISPLAY "Veuillez saisir le nombre de voyageurs."
-               DISPLAY "(1 a 4)"
+               DISPLAY "(1 a " fu_nbplace ")"
                ACCEPT w_place_max
                DISPLAY " "
            END-PERFORM
@@ -93,7 +93,7 @@
            END-PERFORM
            *>  ajout de l'annonce
            *>  note : il faut augmenter fa_code de 1 a chaque execution
-           MOVE 4 TO w_code
+           MOVE 5 TO w_code
            MOVE wu_telephone TO w_conducteur
            MOVE w_annonce TO tamp_fannonce
            OPEN I-O fannonce
