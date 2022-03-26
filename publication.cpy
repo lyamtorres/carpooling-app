@@ -24,63 +24,60 @@
                DISPLAY "A bientot !"
            END-EVALUATE.
 
-           *> TO-DO : faire une recherche sur zone pour chaque user
-
        PUBLIER_ANNONCE.
            DISPLAY '|| PUBLIER UNE NOUVELLE ANNONCE ||'
            DISPLAY ' '
-           ACCEPT SYS-DATE6 FROM DATE
-           *> saisie date de depart
+           MOVE FUNCTION CURRENT-DATE to WS-CURRENT-DATE-DATA
            DISPLAY "Vous allez d'abord saisir la date de depart."
            DISPLAY "ATTENTION ! Vous pouvez uniquement publier des"
            DISPLAY "annonces pour l'annee en cours."
            DISPLAY " "
-           SET w_annee TO AA
-           PERFORM WITH TEST AFTER UNTIL w_mois >= MM AND w_mois <= 12
+           SET w_annee TO WS-CURRENT-YEAR
+           PERFORM WITH TEST AFTER UNTIL w_mois >= WS-CURRENT-MONTH
+           AND w_mois <= 12
                DISPLAY "Veuillez saisir le mois souhaite."
-               DISPLAY "(entre " MM " et 12)"
+               DISPLAY "("WS-CURRENT-MONTH " - 12)"
                ACCEPT w_mois
-               DISPLAY " "
            END-PERFORM
-           IF w_mois = 1 OR w_mois = 3 OR w_mois = 5 OR
-              w_mois = 7 OR w_mois = 8 OR w_mois = 10 OR
-              w_mois = 12 THEN
-               SET w_dernier_jour TO 31
-           ELSE IF w_mois = 4 OR w_mois = 6 OR w_mois = 9 OR
-                   w_mois = 11
+
+           IF w_mois = 4 OR w_mois = 6 OR w_mois = 9 OR w_mois = 11 THEN
                SET w_dernier_jour TO 30
            ELSE
-               SET w_dernier_jour TO 28
+               IF w_mois = 2 THEN
+                   SET w_dernier_jour TO 28
+               ELSE
+                   SET w_dernier_jour TO 31
+               END-IF
            END-IF
-           IF w_mois = MM THEN
-               SET w_premier_jour TO JJ
+
+           IF w_mois = WS-CURRENT-MONTH THEN
+               SET w_premier_jour TO WS-CURRENT-DAY
            ELSE
                SET w_premier_jour TO 1
            END-IF
+
            PERFORM WITH TEST AFTER UNTIL w_jour >= w_premier_jour
                AND w_jour <= w_dernier_jour
                DISPLAY "Maintenant, veuillez saisir le jour."
-               DISPLAY "("w_premier_jour " a " w_dernier_jour ")"
+               DISPLAY "("w_premier_jour " - " w_dernier_jour")"
                ACCEPT w_jour
                DISPLAY " "
            END-PERFORM
 
-           *> saisie point de depart et d'arrivee
            DISPLAY "Veuillez saisir votre point de depart."
            ACCEPT w_lieu_depart
            DISPLAY " "
            DISPLAY "Veuillez saisir votre point d'arrivee."
            ACCEPT w_lieu_darrive
            DISPLAY " "
-           *>  saisie lieu de rendez-vous
            DISPLAY "Veuillez saisir un lieu de rendez-vous."
            ACCEPT w_lieu_rdv
            DISPLAY " "
            *>  saisie nombre de voyageurs
            PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
-           w_place_max <= fu_nbplace
+           w_place_max <= 4
                DISPLAY "Veuillez saisir le nombre de voyageurs."
-               DISPLAY "(1 a " fu_nbplace ")"
+               DISPLAY "(1 a " wu_nbplace ")"
                ACCEPT w_place_max
                DISPLAY " "
            END-PERFORM
@@ -93,7 +90,7 @@
            END-PERFORM
            *>  ajout de l'annonce
            *>  note : il faut augmenter fa_code de 1 a chaque execution
-           MOVE 5 TO w_code
+           MOVE 11 TO w_code
            MOVE wu_telephone TO w_conducteur
            MOVE w_annonce TO tamp_fannonce
            OPEN I-O fannonce
@@ -135,14 +132,14 @@
            IF w_reponse = 'o' OR w_reponse = 'O' THEN
                DISPLAY "Vous allez d'abord saisir la date de depart."
                DISPLAY " "
-               SET w_annee TO AA
-               PERFORM WITH TEST AFTER UNTIL w_mois >= MM
+               SET w_annee TO WS-CURRENT-YEAR
+               PERFORM WITH TEST AFTER UNTIL w_mois >= WS-CURRENT-MONTH
                    DISPLAY "Veuillez saisir le mois souhaite."
                    DISPLAY "(entre 1 et 12)"
                    ACCEPT w_mois
                    DISPLAY " "
                END-PERFORM
-               PERFORM WITH TEST AFTER UNTIL w_jour >= JJ
+               PERFORM WITH TEST AFTER UNTIL w_jour >= WS-CURRENT-DAY
                    DISPLAY "Maintenant, veuillez saisir le jour."
                    DISPLAY "(entre 1 et 31)"
                    ACCEPT w_jour
@@ -282,8 +279,11 @@
                    DISPLAY "Rendez-vous : " fa_lieu_rdv
                    DISPLAY "Conducteur : " fa_conducteur
                    DISPLAY "Date de depart : " fa_date_depart
+                   DISPLAY " "
                END-READ
                END-PERFORM
            END-START
 
            CLOSE fannonce.
+
+       SAISIR_DATE.
