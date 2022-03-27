@@ -1,26 +1,26 @@
        AFFICHER_OPTIONS_ANNONCES.
-           PERFORM WITH TEST AFTER UNTIL w_opt >= 1 AND w_opt <= 5
+           PERFORM WITH TEST AFTER UNTIL w_opt >= 0 AND w_opt <= 4
                DISPLAY "|| GESTION DES ANNONCES ||"
                DISPLAY " "
                DISPLAY "Veuillez saisir l'option souhaite."
-               DISPLAY "1.Publier une annonce"
-               DISPLAY "2.Modifier une annonce"
-               DISPLAY "3.Supprimer une annonce"
-               DISPLAY "4.Afficher toutes les annonces"
-               DISPLAY "5.Sortir"
+               DISPLAY "1 - Publier une annonce"
+               DISPLAY "2 - Modifier une annonce"
+               DISPLAY "3 - Supprimer une annonce"
+               DISPLAY "4 - Afficher toutes les annonces"
+               DISPLAY "0 - Sortir"
                ACCEPT w_opt
            END-PERFORM
 
            EVALUATE w_opt
            WHEN 1
-                PERFORM PUBLIER_ANNONCE
+               PERFORM PUBLIER_ANNONCE
            WHEN 2
-                PERFORM MODIFIER_ANNONCE
+               PERFORM MODIFIER_ANNONCE
            WHEN 3
-                PERFORM SUPPRIMER_ANNONCE
+               PERFORM SUPPRIMER_ANNONCE
            WHEN 4
-               PERFORM AFFICHER_ANNONCES_BIS
-           WHEN 5
+               PERFORM AFFICHER_ANNONCES_UTILISATEUR
+           WHEN 0
                DISPLAY "A bientot !"
            END-EVALUATE.
 
@@ -73,24 +73,35 @@
            DISPLAY "Veuillez saisir un lieu de rendez-vous."
            ACCEPT w_lieu_rdv
            DISPLAY " "
-           *>  saisie nombre de voyageurs
-           PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
-           w_place_max <= 4
-               DISPLAY "Veuillez saisir le nombre de voyageurs."
-               DISPLAY "(1 a " wu_nbplace ")"
-               ACCEPT w_place_max
+
+           *>  saisie du nombre des voyageurs
+           OPEN I-O futilisateur
+           MOVE wu_telephone TO fu_telephone
+           READ futilisateur
+           INVALID KEY
+               DISPLAY "Cet identifiant n'existe pas."
                DISPLAY " "
-           END-PERFORM
-           *>  saisie prix du voyage
+           NOT INVALID KEY
+               PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
+               w_place_max <= fu_nbplace
+                   DISPLAY "Veuillez saisir le nombre de voyageurs."
+                   DISPLAY "(1 - " fu_nbplace")"
+                   ACCEPT w_place_max
+                   DISPLAY " "
+               END-PERFORM
+           END-READ
+           CLOSE fannonce
+
+           *>  saisie du prix
            PERFORM WITH TEST AFTER UNTIL w_prix_annonce >= 5
                DISPLAY "Veuillez saisir le prix du voyage."
-               DISPLAY "(5 ou plus)"
+               DISPLAY "(Minimum 5)"
                ACCEPT w_prix_annonce
                DISPLAY " "
            END-PERFORM
            *>  ajout de l'annonce
            *>  note : il faut augmenter fa_code de 1 a chaque execution
-           MOVE 11 TO w_code
+           MOVE 2 TO w_code
            MOVE wu_telephone TO w_conducteur
            MOVE w_annonce TO tamp_fannonce
            OPEN I-O fannonce
@@ -104,13 +115,11 @@
                END-WRITE
            CLOSE fannonce.
 
-           *> TO-DO : trouver le probleme avec le mois en cours
-
        MODIFIER_ANNONCE.
            DISPLAY "|| MODIFIER UNE ANNONCE ||"
            DISPLAY " "
 
-           PERFORM AFFICHER_ANNONCES_BIS
+           PERFORM AFFICHER_ANNONCES_UTILISATEUR
 
            DISPLAY "Veuillez saisir le code de l'annonce a modifier."
            ACCEPT w_code
@@ -206,22 +215,16 @@
 
            CLOSE fannonce.
 
-           *> TO-DO : sauvegarder les infos qui ne sont pas modifiés
-
        SUPPRIMER_ANNONCE.
            DISPLAY "|| SUPPRIMER UNE ANNNONCE ||"
            DISPLAY " "
-
-           PERFORM AFFICHER_ANNONCES_BIS
-
+           PERFORM AFFICHER_ANNONCES_UTILISATEUR
            DISPLAY "Veuillez saisir le code de l'annonce a supprimer."
            ACCEPT w_code
            DISPLAY " "
-
            *> supprimer l'annnonce selectionne
            OPEN I-O fannonce
            MOVE w_code TO fa_code
-
            READ fannonce
            INVALID KEY
                DISPLAY "Cet identifiant n'existe pas."
@@ -231,10 +234,9 @@
                DISPLAY "Votre annonce a ete supprimee."
                DISPLAY " "
            END-READ
+           CLOSE fannonce
 
-           CLOSE fannonce.
-
-           *> TO-DO : afficher uniquement les annonces d'un seul user
+           PERFORM AFFICHER_OPTIONS_ANNONCES.
 
        AFFICHER_ANNONCES.
            DISPLAY "Voici la liste d'annonces en cours :"
@@ -259,7 +261,7 @@
 
            CLOSE fannonce.
 
-       AFFICHER_ANNONCES_BIS.
+       AFFICHER_ANNONCES_UTILISATEUR.
            OPEN INPUT fannonce
            MOVE 1 TO w_fin
            MOVE wu_telephone TO fa_conducteur
@@ -285,5 +287,3 @@
            END-START
 
            CLOSE fannonce.
-
-       SAISIR_DATE.
