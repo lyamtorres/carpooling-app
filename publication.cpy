@@ -19,7 +19,7 @@
            WHEN 3
                PERFORM SUPPRIMER_ANNONCE
            WHEN 4
-               PERFORM AFFICHER_ANNONCES_UTILISATEUR
+               PERFORM AFFICHER_ANNONCES_UTILISATEUR_2
            WHEN 0
                DISPLAY "A bientot !"
            END-EVALUATE.
@@ -27,42 +27,8 @@
        PUBLIER_ANNONCE.
            DISPLAY '|| PUBLIER UNE NOUVELLE ANNONCE ||'
            DISPLAY ' '
-           MOVE FUNCTION CURRENT-DATE to WS-CURRENT-DATE-DATA
-           DISPLAY "Vous allez d'abord saisir la date de depart."
-           DISPLAY "ATTENTION ! Vous pouvez uniquement publier des"
-           DISPLAY "annonces pour l'annee en cours."
-           DISPLAY " "
-           SET w_annee TO WS-CURRENT-YEAR
-           PERFORM WITH TEST AFTER UNTIL w_mois >= WS-CURRENT-MONTH
-           AND w_mois <= 12
-               DISPLAY "Veuillez saisir le mois souhaite."
-               DISPLAY "("WS-CURRENT-MONTH " - 12)"
-               ACCEPT w_mois
-           END-PERFORM
 
-           IF w_mois = 4 OR w_mois = 6 OR w_mois = 9 OR w_mois = 11 THEN
-               SET w_dernier_jour TO 30
-           ELSE
-               IF w_mois = 2 THEN
-                   SET w_dernier_jour TO 28
-               ELSE
-                   SET w_dernier_jour TO 31
-               END-IF
-           END-IF
-
-           IF w_mois = WS-CURRENT-MONTH THEN
-               SET w_premier_jour TO WS-CURRENT-DAY
-           ELSE
-               SET w_premier_jour TO 1
-           END-IF
-
-           PERFORM WITH TEST AFTER UNTIL w_jour >= w_premier_jour
-               AND w_jour <= w_dernier_jour
-               DISPLAY "Maintenant, veuillez saisir le jour."
-               DISPLAY "("w_premier_jour " - " w_dernier_jour")"
-               ACCEPT w_jour
-               DISPLAY " "
-           END-PERFORM
+           PERFORM SAISIR_DATE_DEPART
 
            DISPLAY "Veuillez saisir votre point de depart."
            ACCEPT w_lieu_depart
@@ -74,31 +40,10 @@
            ACCEPT w_lieu_rdv
            DISPLAY " "
 
-           *>  saisie du nombre des voyageurs
-           OPEN I-O futilisateur
-           MOVE wu_telephone TO fu_telephone
-           READ futilisateur
-           INVALID KEY
-               DISPLAY "Cet identifiant n'existe pas."
-               DISPLAY " "
-           NOT INVALID KEY
-               PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
-               w_place_max <= fu_nbplace
-                   DISPLAY "Veuillez saisir le nombre de voyageurs."
-                   DISPLAY "(1 - " fu_nbplace")"
-                   ACCEPT w_place_max
-                   DISPLAY " "
-               END-PERFORM
-           END-READ
-           CLOSE fannonce
+           PERFORM SAISIR_VOYAGEUR
 
-           *>  saisie du prix
-           PERFORM WITH TEST AFTER UNTIL w_prix_annonce >= 5
-               DISPLAY "Veuillez saisir le prix du voyage."
-               DISPLAY "(Minimum 5)"
-               ACCEPT w_prix_annonce
-               DISPLAY " "
-           END-PERFORM
+           PERFORM SAISIR_PRIX
+
            *>  ajout de l'annonce
            *>  note : il faut augmenter fa_code de 1 a chaque execution
            MOVE 2 TO w_code
@@ -113,7 +58,9 @@
                    DISPLAY "Ajout effectue."
                    DISPLAY " "
                END-WRITE
-           CLOSE fannonce.
+           CLOSE fannonce
+
+           PERFORM AFFICHER_OPTIONS_ANNONCES.
 
        MODIFIER_ANNONCE.
            DISPLAY "|| MODIFIER UNE ANNONCE ||"
@@ -133,87 +80,85 @@
                DISPLAY "Cet identifiant n'existe pas."
                DISPLAY " "
            NOT INVALID KEY
+           MOVE tamp_fannonce TO w_annonce
 
-           *> instructions pour modifier le tampon
-           DISPLAY "Voulez-vous changer la date de depart ? (O/N)"
-           ACCEPT w_reponse
-           DISPLAY " "
-           IF w_reponse = 'o' OR w_reponse = 'O' THEN
-               DISPLAY "Vous allez d'abord saisir la date de depart."
+           PERFORM WITH TEST AFTER UNTIL w_reponse = 'o' OR
+               w_reponse = 'O' OR w_reponse = 'n' OR w_reponse = 'N'
+               DISPLAY "Voulez-vous changer la date de depart ? (O/N)"
+               ACCEPT w_reponse
                DISPLAY " "
-               SET w_annee TO WS-CURRENT-YEAR
-               PERFORM WITH TEST AFTER UNTIL w_mois >= WS-CURRENT-MONTH
-                   DISPLAY "Veuillez saisir le mois souhaite."
-                   DISPLAY "(entre 1 et 12)"
-                   ACCEPT w_mois
+               IF w_reponse = 'o' OR w_reponse = 'O' THEN
+                   PERFORM SAISIR_DATE_DEPART
+               END-IF
+           END-PERFORM
+
+           PERFORM WITH TEST AFTER UNTIL w_reponse = 'o' OR
+           w_reponse = 'O' OR w_reponse = 'n' OR w_reponse = 'N'
+               DISPLAY "Voulez-vous changer le point de depart ? (O/N)"
+               ACCEPT w_reponse
+               DISPLAY " "
+               IF w_reponse = 'o' OR w_reponse = 'O' THEN
+                   DISPLAY "Veuillez saisir votre point de depart."
+                   ACCEPT w_lieu_depart
                    DISPLAY " "
-               END-PERFORM
-               PERFORM WITH TEST AFTER UNTIL w_jour >= WS-CURRENT-DAY
-                   DISPLAY "Maintenant, veuillez saisir le jour."
-                   DISPLAY "(entre 1 et 31)"
-                   ACCEPT w_jour
+               END-IF
+           END-PERFORM
+
+           PERFORM WITH TEST AFTER UNTIL w_reponse = 'o' OR
+           w_reponse = 'O' OR w_reponse = 'n' OR w_reponse = 'N'
+               DISPLAY "Voulez-vous changer le point d'arrivee ? (O/N)"
+               ACCEPT w_reponse
+               DISPLAY " "
+               IF w_reponse = 'o' OR w_reponse = 'O' THEN
+                   DISPLAY "Veuillez saisir votre point d'arrivee."
+                   ACCEPT w_lieu_darrive
                    DISPLAY " "
-               END-PERFORM
-           END-IF
+               END-IF
+           END-PERFORM
 
-           DISPLAY "Voulez-vous changer le point de depart ? (O/N)"
-           ACCEPT w_reponse
-           DISPLAY " "
-           IF w_reponse = 'o' OR w_reponse = 'O' THEN
-               DISPLAY "Veuillez saisir votre point de depart."
-               ACCEPT w_lieu_depart
+           PERFORM WITH TEST AFTER UNTIL w_reponse = 'o' OR
+           w_reponse = 'O' OR w_reponse = 'n' OR w_reponse = 'N'
+               DISPLAY "Voulez-vous changer le lieu de rendez-vous ?"
+               DISPLAY "(O/N)"
+               ACCEPT w_reponse
                DISPLAY " "
-           END-IF
-
-           DISPLAY "Voulez-vous changer le point d'arrivee ? (O/N)"
-           ACCEPT w_reponse
-           DISPLAY " "
-           IF w_reponse = 'o' OR w_reponse = 'O' THEN
-               DISPLAY "Veuillez saisir votre point d'arrivee."
-               ACCEPT w_lieu_darrive
-               DISPLAY " "
-           END-IF
-
-           DISPLAY "Voulez-vous changer le lieu de rendez-vous ? (O/N)"
-           ACCEPT w_reponse
-           DISPLAY " "
-           IF w_reponse = 'o' OR w_reponse = 'O' THEN
-               DISPLAY "Veuillez saisir un lieu de rendez-vous."
-               ACCEPT w_lieu_rdv
-               DISPLAY " "
-           END-IF
-
-           DISPLAY "Voulez-vous changer le nombre de voyageurs ? (O/N)"
-           ACCEPT w_reponse
-           DISPLAY " "
-           IF w_reponse = 'o' OR w_reponse = 'O' THEN
-               PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
-               w_place_max <= 4
-                   DISPLAY "Veuillez saisir le nombre de voyageurs."
-                   DISPLAY "(1 é 4)"
-                   ACCEPT w_place_max
+               IF w_reponse = 'o' OR w_reponse = 'O' THEN
+                   DISPLAY "Veuillez saisir un lieu de rendez-vous."
+                   ACCEPT w_lieu_rdv
                    DISPLAY " "
-               END-PERFORM
-           END-IF
+               END-IF
+           END-PERFORM
 
-           DISPLAY "Voulez-vous changer le prix du voyage ? (O/N)"
-           ACCEPT w_reponse
-           DISPLAY " "
-           IF w_reponse = 'o' OR w_reponse = 'O' THEN
-               PERFORM WITH TEST AFTER UNTIL w_prix_annonce >= 5
-                   DISPLAY "Veuillez saisir le prix du voyage."
-                   DISPLAY "(5 ou plus)"
-                   ACCEPT w_prix_annonce
-                   DISPLAY " "
-               END-PERFORM
-           END-IF
-               MOVE w_annonce TO tamp_fannonce
-               REWRITE tamp_fannonce
-               DISPLAY "Votre annonce a ete modifie."
+           PERFORM WITH TEST AFTER UNTIL w_reponse = 'o' OR
+           w_reponse = 'O' OR w_reponse = 'n' OR w_reponse = 'N'
+               DISPLAY "Voulez-vous changer le nombre de voyageurs ?"
+               DISPLAY "(O/N)"
+               ACCEPT w_reponse
                DISPLAY " "
+               IF w_reponse = 'o' OR w_reponse = 'O' THEN
+                   PERFORM SAISIR_VOYAGEUR
+               END-IF
+           END-PERFORM
+
+           PERFORM WITH TEST AFTER UNTIL w_reponse = 'o' OR
+           w_reponse = 'O' OR w_reponse = 'n' OR w_reponse = 'N'
+               DISPLAY "Voulez-vous changer le prix du voyage ? (O/N)"
+               ACCEPT w_reponse
+               DISPLAY " "
+               IF w_reponse = 'o' OR w_reponse = 'O' THEN
+                   PERFORM SAISIR_PRIX
+               END-IF
+           END-PERFORM
+
+           MOVE w_annonce TO tamp_fannonce
+           REWRITE tamp_fannonce
+           DISPLAY "Votre annonce a ete modifie."
+           DISPLAY " "
            END-READ
 
-           CLOSE fannonce.
+           CLOSE fannonce
+
+           PERFORM AFFICHER_OPTIONS_ANNONCES.
 
        SUPPRIMER_ANNONCE.
            DISPLAY "|| SUPPRIMER UNE ANNNONCE ||"
@@ -242,7 +187,7 @@
            DISPLAY "Voici la liste d'annonces en cours :"
            DISPLAY " "
            OPEN INPUT fannonce
-           MOVE 2 TO w_fin
+           MOVE 1 TO w_fin
 
            PERFORM WITH TEST AFTER UNTIL w_fin = 0
            READ fannonce NEXT
@@ -287,3 +232,94 @@
            END-START
 
            CLOSE fannonce.
+
+       AFFICHER_ANNONCES_UTILISATEUR_2.
+           PERFORM AFFICHER_ANNONCES_UTILISATEUR
+           PERFORM AFFICHER_OPTIONS_ANNONCES.
+
+       AJOUTER_CODE.
+           OPEN I-O fcode
+           SET w_code_annonce TO 1
+           SET w_code_reservation TO 2
+           MOVE w_code_reservation TO fc_code
+           MOVE w_code_annonce TO fc_code_annonce
+           DISPLAY fc_code
+           DISPLAY fc_code_annonce
+           WRITE tamp_fcode
+           END-WRITE
+           CLOSE fcode.
+
+       LIRE_CODE.
+           OPEN INPUT fcode
+           MOVE 1 TO w_fin
+           PERFORM WITH TEST AFTER UNTIL w_fin = 0
+               READ fcode
+                   AT END MOVE 0 TO w_fin
+                   NOT AT END DISPLAY fc_code_annonce
+               END-READ
+           END-PERFORM
+           CLOSE fcode.
+
+       SAISIR_DATE_DEPART.
+           MOVE FUNCTION CURRENT-DATE to WS-CURRENT-DATE-DATA
+           DISPLAY "Vous allez d'abord saisir la date de depart."
+           DISPLAY "ATTENTION ! Vous pouvez uniquement publier des"
+           DISPLAY "annonces pour l'annee en cours."
+           DISPLAY " "
+           SET w_annee TO WS-CURRENT-YEAR
+           PERFORM WITH TEST AFTER UNTIL w_mois >= WS-CURRENT-MONTH
+           AND w_mois <= 12
+               DISPLAY "Veuillez saisir le mois souhaite."
+               DISPLAY "("WS-CURRENT-MONTH " - 12)"
+               ACCEPT w_mois
+           END-PERFORM
+
+           IF w_mois = 4 OR w_mois = 6 OR w_mois = 9 OR w_mois = 11 THEN
+               SET w_dernier_jour TO 30
+           ELSE
+               IF w_mois = 2 THEN
+                   SET w_dernier_jour TO 28
+               ELSE
+                   SET w_dernier_jour TO 31
+               END-IF
+           END-IF
+
+           IF w_mois = WS-CURRENT-MONTH THEN
+               SET w_premier_jour TO WS-CURRENT-DAY
+           ELSE
+               SET w_premier_jour TO 1
+           END-IF
+
+           PERFORM WITH TEST AFTER UNTIL w_jour >= w_premier_jour
+               AND w_jour <= w_dernier_jour
+               DISPLAY "Maintenant, veuillez saisir le jour."
+               DISPLAY "("w_premier_jour " - " w_dernier_jour")"
+               ACCEPT w_jour
+               DISPLAY " "
+           END-PERFORM.
+
+       SAISIR_VOYAGEUR.
+           OPEN I-O futilisateur
+           MOVE wu_telephone TO fu_telephone
+           READ futilisateur
+           INVALID KEY
+               DISPLAY "Cet identifiant n'existe pas."
+               DISPLAY " "
+           NOT INVALID KEY
+               PERFORM WITH TEST AFTER UNTIL w_place_max >= 1 AND
+               w_place_max <= fu_nbplace
+                   DISPLAY "Veuillez saisir le nombre de voyageurs."
+                   DISPLAY "(1 - " fu_nbplace")"
+                   ACCEPT w_place_max
+                   DISPLAY " "
+               END-PERFORM
+           END-READ
+           CLOSE fannonce.
+
+       SAISIR_PRIX.
+           PERFORM WITH TEST AFTER UNTIL w_prix_annonce >= 5
+               DISPLAY "Veuillez saisir le prix du voyage."
+               DISPLAY "(Minimum 5)"
+               ACCEPT w_prix_annonce
+               DISPLAY " "
+           END-PERFORM.
